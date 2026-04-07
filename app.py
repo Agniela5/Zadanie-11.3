@@ -64,7 +64,6 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.config.suppress_callback_exceptions = True
 
-# Sugestia: Na czas testów możesz zakomentować auth, jeśli widzisz tylko białą stronę
 #USERNAME_PASSWORD = [['user','pass']]
 #auth = dash_auth.BasicAuth(app, USERNAME_PASSWORD)
 
@@ -90,7 +89,7 @@ def render_content(tab):
     
 @app.callback(Output('bar-sales','figure'),[Input('sales-range','start_date'),Input('sales-range','end_date')])
 def tab1_bar_sales(start_date, end_date):
-    # POPRAWKA: Konwersja stringów na datetime
+    # konwersja stringów na datetime
     start_date = pd.to_datetime(start_date)
     end_date = pd.to_datetime(end_date)
     
@@ -120,10 +119,8 @@ def tab1_choropleth_sales(start_date, end_date):
 
 @app.callback(Output('barh-prod-subcat','figure'), [Input('prod_dropdown','value')])
 def tab2_barh_prod_subcat(chosen_cat):
-    # POPRAWKA: fillna(0) zabezpiecza przed błędem, gdy brakuje płci M lub F w kategorii
     grouped = df.merged[(df.merged['total_amt']>0) & (df.merged['prod_cat']==chosen_cat)].pivot_table(index='prod_subcat', columns='Gender', values='total_amt', aggfunc='sum').fillna(0)
     
-    # Upewnienie się, że kolumny F i M istnieją
     for gender in ['F', 'M']:
         if gender not in grouped.columns:
             grouped[gender] = 0
@@ -139,6 +136,5 @@ def tab3_demographics(chosen_demo):
     return go.Figure(data=traces, layout=go.Layout(title=f'Liczba unikalnych klientów wg {chosen_demo}', barmode='stack'))
 
 if __name__ == '__main__':
-    # Upewnij się, że dane w ogóle się wczytały
     print(f"Wczytano transakcji: {len(df.merged)}")
     app.run(debug=True, port=8051)
