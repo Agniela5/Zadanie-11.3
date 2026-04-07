@@ -95,7 +95,7 @@ def tab1_bar_sales(start_date, end_date):
     end_date = pd.to_datetime(end_date)
     
     truncated = df.merged[(df.merged['tran_date'] >= start_date) & (df.merged['tran_date'] <= end_date)]
-    grouped = truncated[truncated['total_amt']>0].groupby([pd.Grouper(key='tran_date',freq='M'),'Store_type'])['total_amt'].sum().round(2).unstack()
+    grouped = truncated[truncated['total_amt']>0].groupby([pd.Grouper(key='tran_date',freq='ME'),'Store_type'])['total_amt'].sum().round(2).unstack()
     
     traces = []
     if not grouped.empty:
